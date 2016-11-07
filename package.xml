@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>lu4r_interface</name>
+  <name>lu4r_ros_interface</name>
   <version>0.0.0</version>
-  <description>The lu4r_interface package</description>
+  <description>The lu4r_ros_interface package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
