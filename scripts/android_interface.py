@@ -42,7 +42,7 @@ def listener():
 	lu4r_ip = rospy.get_param("~lu4r_ip", '127.0.0.1')
 	lu4r_port = rospy.get_param("~lu4r_port", '9090')
 	lu4r_url = 'http://' + lu4r_ip + ':' + str(lu4r_port) + '/service/nlu' 
-	sem_map = rospy.get_param('~semantic_map','semantic_map.txt')
+	sem_map = rospy.get_param('~semantic_map','semantic_map1.txt')
 	entities = open(dir + "/semantic_maps/" + sem_map).read()
 	json_string = json.loads(entities)
 	print 'Entities into the semantic map:'
