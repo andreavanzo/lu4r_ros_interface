@@ -33,8 +33,8 @@ conn = None
 semantic_map = {}
 goal = Pose2D()
 HOST = ''
-PORT = 5001
-CHAIN_URL = 'http://127.0.0.1:9091/service/nlu'
+port = 5001
+CHAIN_URL = ''
 HEADERS = {'content-type': 'application/json'}
 rospack = rospkg.RosPack()
 dir = rospack.get_path('lu4r_ros_interface')
@@ -43,23 +43,13 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 print 'Socket created'
 try:
-	s.bind((HOST, PORT))
+	s.bind((HOST, port))
 except socket.error as msg:
 	print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
 	sys.exit()
 print 'Socket bind complete'
 s.listen(10)
-print 'Socket now listening on port ' + str(PORT)
-
-def clean_string(to_clean):
-	to_clean = to_clean.replace('\'',' ')
-	to_clean = to_clean.replace('è','e')
-	to_clean = to_clean.replace('é','e')
-	to_clean = to_clean.replace('ì','i')
-	to_clean = to_clean.replace('à','a')
-	to_clean = to_clean.replace('ò','o')
-	to_clean = to_clean.replace('ù','u')
-	return to_clean
+print 'Socket now listening on port ' + str(port)
 
 def simple_move(pose):
 	sac = actionlib.SimpleActionClient('/move_base', MoveBaseAction )
@@ -91,13 +81,13 @@ def listener():
 	motion = Twist()
 	rospy.init_node('android_interface', anonymous = True)
 	v_joyopad = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
-	max_tv = rospy.get_param("~max_tv", 0.6)
-	max_rv = rospy.get_param("~max_rv", 0.8)
-	PORT = rospy.get_param("~port", 5001)
-	CHAIN_URL = 'http://' + rospy.get_param("~lu4r_ip", '127.0.0.1') + ':' + rospy.get_param("~lu4r_port", '9090') + '/service/nlu' 
+	max_tv = rospy.get_param("~_max_tv", 0.6)
+	max_rv = rospy.get_param("~_max_rv", 0.8)
+	port = rospy.get_param("~_port", 5001)
+	CHAIN_URL = 'http://' + rospy.get_param("~_lu4r_ip", '127.0.0.1') + ':' + rospy.get_param("~_lu4r_port", '9090') + '/service/nlu' 
 	sem_map = rospy.get_param('~semantic_map','semantic_map.txt')
-	ENTITIES = open(dir + "/semantic_maps/" + sem_map).read()
-	json_string = json.loads(ENTITIES)
+	entities = open(dir + "/semantic_maps/" + sem_map).read()
+	json_string = json.loads(entities)
 	for entity in json_string['entities']:
 		semantic_map[entity['type']] = Pose2D()
 		semantic_map[entity['type']].x = entity["coordinate"]["x"]
@@ -132,7 +122,7 @@ def listener():
 					motion.angular.z = max_rv * -1 * rho * cos(theta)
 					v_joyopad.publish(motion)
 				elif currentFragment == "SLU":
-					toSend = {'hypo': data, 'entities': ENTITIES}
+					toSend = {'hypo': data, 'entities': entities}
 					print "MESSAGE TO SEND "+ data
 					response = requests.post(CHAIN_URL, toSend, headers = HEADERS)
 					predicates = xdg.find_predicates(response.text)
