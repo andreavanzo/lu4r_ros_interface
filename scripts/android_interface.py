@@ -4,7 +4,6 @@
 # encoding=utf8
 
 import rospy
-from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 import socket
 import sys
@@ -91,7 +90,6 @@ def listener():
 	global conn
 	motion = Twist()
 	rospy.init_node('android_interface', anonymous = True)
-	rospy.Subscriber('joy', Joy, callback)
 	rospy.Subscriber("speech", String, speech_callback)
 	v_joyopad = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
 	max_tv = rospy.get_param("~max_tv", 0.6)
