@@ -7,24 +7,15 @@ import rospy
 from std_msgs.msg import String
 import socket
 import sys
-import re
 import requests
-import actionlib
-import tf
 import rospkg
 import json
-import time
-import datetime
 from math import radians, sin, cos
-from move_base_msgs.msg import *
-from tf.transformations import quaternion_from_euler
 from geometry_msgs.msg import Pose2D
 from geometry_msgs.msg import Twist
 import xmltodict
-import pprint
-import os
 import xdg_extract as xdg
-from subprocess import call
+import netifaces as ni
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -37,30 +28,6 @@ port = 5001
 HEADERS = {'content-type': 'application/json'}
 rospack = rospkg.RosPack()
 dir = rospack.get_path('lu4r_ros_interface')
-
-def simple_move(pose):
-	sac = actionlib.SimpleActionClient('/move_base', MoveBaseAction )
-	goal = MoveBaseGoal()
-	goal.target_pose.pose.position.x = float(pose.x)
-	goal.target_pose.pose.position.y = float(pose.y)
-	quaternion = tf.transformations.quaternion_from_euler(0, 0, float(pose.theta))
-	goal.target_pose.pose.orientation.x = quaternion[0]
-	goal.target_pose.pose.orientation.y = quaternion[1]
-	goal.target_pose.pose.orientation.z = quaternion[2]
-	goal.target_pose.pose.orientation.w = quaternion[3]
-	goal.target_pose.header.frame_id = '/map'
-	goal.target_pose.header.stamp = rospy.Time.now()
-	print 'Wait for service'
-	sac.wait_for_server()
-	print 'sending goal'
-	sac.send_goal(goal)
-	print 'Wait for result'
-	sac.wait_for_result()
-	result = int( sac.get_state())
-	if(result == 3):
-		return 'DON'
-	else:
-		return 'ERR'
 
 def listener():
 	global semantic_map
@@ -78,13 +45,14 @@ def listener():
 	sem_map = rospy.get_param('~semantic_map','semantic_map.txt')
 	entities = open(dir + "/semantic_maps/" + sem_map).read()
 	json_string = json.loads(entities)
+	print 'Entities into the semantic map:'
 	for entity in json_string['entities']:
 		semantic_map[entity['type']] = Pose2D()
 		semantic_map[entity['type']].x = entity["coordinate"]["x"]
 		semantic_map[entity['type']].y = entity["coordinate"]["y"]
 		semantic_map[entity['type']].theta = entity["coordinate"]["angle"]
-		print entity['type']
-		print semantic_map[entity['type']]
+		print '\t' + entity['type']
+		print str(semantic_map[entity['type']])
 		print
 	currentFragment = ''
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -99,7 +67,7 @@ def listener():
 	s.listen(10)
 	
 	while not rospy.is_shutdown():
-		print "Waiting for connection on port " + str(port)
+		print "Waiting for connection on " + ni.ifaddresses('wlan0')[2][0]['addr'] + ':' + str(port)
 		conn, addr = s.accept()
 		print 'Connected with ' + addr[0] + ':' + str(addr[1])
 		while not rospy.is_shutdown():
