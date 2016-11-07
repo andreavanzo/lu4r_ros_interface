@@ -63,7 +63,7 @@ def clean_string(to_clean):
 	return to_clean
 
 def simple_move(pose):
-    sac = actionlib.SimpleActionClient('/move_base', MoveBaseAction )
+	sac = actionlib.SimpleActionClient('/move_base', MoveBaseAction )
 	goal = MoveBaseGoal()
 	goal.target_pose.pose.position.x = float(pose.x)
 	goal.target_pose.pose.position.y = float(pose.y)
