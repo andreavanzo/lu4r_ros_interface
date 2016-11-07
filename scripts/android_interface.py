@@ -38,7 +38,7 @@ PORT = 5001
 CHAIN_URL = 'http://127.0.0.1:9091/service/nlu'
 HEADERS = {'content-type': 'application/json'}
 rospack = rospkg.RosPack()
-dir = rospack.get_path('android_interface')
+dir = rospack.get_path('lu4r_ros_interface')
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -90,7 +90,7 @@ def listener():
 	global semantic_map
 	global conn
 	motion = Twist()
-	rospy.init_node('android_interface_node', anonymous = True)
+	rospy.init_node('android_interface', anonymous = True)
 	rospy.Subscriber('joy', Joy, callback)
 	rospy.Subscriber("speech", String, speech_callback)
 	v_joyopad = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
