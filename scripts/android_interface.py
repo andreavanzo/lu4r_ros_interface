@@ -90,7 +90,6 @@ def listener():
 	global conn
 	motion = Twist()
 	rospy.init_node('android_interface', anonymous = True)
-	rospy.Subscriber("speech", String, speech_callback)
 	v_joyopad = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
 	max_tv = rospy.get_param("~max_tv", 0.6)
 	max_rv = rospy.get_param("~max_rv", 0.8)
