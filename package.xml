@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>android_interface</name>
+  <name>lu4r_interface</name>
   <version>0.0.0</version>
-  <description>The android_interface package</description>
+  <description>The lu4r_interface package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

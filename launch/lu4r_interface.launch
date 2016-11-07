@@ -1,0 +1,7 @@
+<launch>
+	<node pkg="joy" type="joy_node" name="joystick"/>
+
+	<node pkg="lu4r_interface" type="android_interface_node.py" name="lu4r_interface" output="screen">
+	</node>
+
+</launch>

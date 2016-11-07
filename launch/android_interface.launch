@@ -1,7 +1,0 @@
-<launch>
-	<node pkg="joy" type="joy_node" name="joystick"/>
-
-	<node pkg="android_interface" type="android_interface_node.py" name="dialogue_interface" output="screen">
-	</node>
-
-</launch>

@@ -34,7 +34,7 @@ conn = None
 semantic_map = {}
 goal = Pose2D()
 HOST = ''
-PORT = 5002
+PORT = 5001
 CHAIN_URL = 'http://127.0.0.1:9091/service/nlu'
 HEADERS = {'content-type': 'application/json'}
 rospack = rospkg.RosPack()
@@ -96,6 +96,8 @@ def listener():
 	v_joyopad = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
 	max_tv = rospy.get_param("~max_tv", 0.6)
 	max_rv = rospy.get_param("~max_rv", 0.8)
+	PORT = rospy.get_param("~port", 5001)
+	CHAIN_URL = 'http://' + rospy.get_param("~lu4r_ip", '127.0.0.1') + ':' + rospy.get_param("~lu4r_port", '9090') + '/service/nlu' 
 	sem_map = rospy.get_param('~semantic_map','semantic_map.txt')
 	ENTITIES = open(dir + "/semantic_maps/" + sem_map).read()
 	json_string = json.loads(ENTITIES)
